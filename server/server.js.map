@@ -1,0 +1,1 @@
+{"version":3,"sources":["/Users/Bacher/Projects/Quizy/server/server.es6"],"names":[],"mappings":";;;;;;AAEA,SAAe,CAAC;;;;oDACL,UAAI,OAAO,CAAC,UAAC,OAAO,EAAE,MAAM,EAAK,EAEvC,CAAC;;;;;;;CACL","file":"server.js","sourcesContent":["\n\nasync function g() {\n    return new Promise((resolve, reject) => {\n\n    });\n}\n"]}

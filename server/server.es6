@@ -23,8 +23,8 @@ MongoClient.connect(MONGODB_URL, function(err, db) {
 
     console.log("Connected correctly to server");
 
-    ENV.cUsers = db.collection('users');
-    ENV.cQuizes = db.collection('quizes');
+    ENV.cUsers = H.addPromiseMode(db.collection('users'));
+    ENV.cQuizes = H.addPromiseMode(db.collection('quizes'));
 
     const app = express();
 

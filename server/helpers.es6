@@ -43,6 +43,51 @@ const execVk = exports.execVk = function(options) {
     });
 };
 
+function findOneP(query) {
+    return new Promise((resolve, reject) => {
+        this.findOne(query, function(err, object) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(object);
+            }
+        })
+    });
+}
+
+function findP(query) {
+    return new Promise((resolve, reject) => {
+        this.find(query).toArray((err, objects) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(objects);
+            }
+        })
+    });
+}
+
+function insertOneP(object) {
+    return new Promise((resolve, reject) => {
+        this.insertOne(object, err => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        })
+    });
+}
+
+exports.addPromiseMode = (collection) => {
+
+    collection.findOneP = findOneP;
+    collection.findP = findP;
+    collection.insertOneP = insertOneP;
+
+    return collection;
+};
+
 var SYMBOLS_BASE = 'abcdefghijklmnopqrstuvwxyz';
 SYMBOLS_BASE += SYMBOLS_BASE.toUpperCase();
 SYMBOLS_BASE += '0123456789';

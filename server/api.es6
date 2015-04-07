@@ -39,53 +39,50 @@ exports.auth = async (req, res) => {
     res.end();
 };
 
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
 
-    var sid = req.cookies['sid'];
+    const sid = req.cookies['sid'];
 
-    ENV.cUsers.findOne({
+    const user = await ENV.cUsers.findOneP({
         'session_id': sid
+    });
 
-    }, async (err, user) => {
-        var userId = user['user_id'];
+    var userId = user['user_id'];
 
-        var quizId = H.genHash(10);
+    var quizId = H.genHash(10);
 
-        var postId = req.body['post_id'].replace(/^wall/, '');
+    var postId = req.body['post_id'].replace(/^wall/, '');
 
-        var postInfo = await H.execVk({
-            method: 'wall.getById',
-            params: {
-                'posts': postId,
-                'extended': 0,
-                'copy_history_depth': 0
-            }
-        });
+    var postInfo = await H.execVk({
+        method: 'wall.getById',
+        params: {
+            'posts': postId,
+            'extended': 0,
+            'copy_history_depth': 0
+        }
+    });
 
-        ENV.cQuizes.insertOne({
-            'quiz_id': quizId,
-            'owner_id': userId,
-            'post_user_id': postInfo['from_id'],
-            'post_id': postId,
-            'name': req.body['name'],
-            'end_date': req.body['end_date']
-        }, (err) => {
-            res.send({
-                'quiz_id': quizId
-            });
-        });
+    await ENV.cQuizes.insertOneP({
+        'quiz_id': quizId,
+        'owner_id': userId,
+        'post_user_id': postInfo['from_id'],
+        'post_id': postId,
+        'name': req.body['name'],
+        'end_date': req.body['end_date']
+    });
+
+    res.send({
+        'quiz_id': quizId
     });
 
 };
 
-exports.quiz = (req, res) => {
+exports.quiz = async (req, res) => {
     var quizId = req.query.q;
 
-    ENV.cQuizes.findOne({
+    const quiz = await ENV.cQuizes.findOneP({
         'quiz_id': quizId
-
-    }, (err, quiz) => {
-        res.send(quiz);
-
     });
+
+    res.send(quiz);
 };

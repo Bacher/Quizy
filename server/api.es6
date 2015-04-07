@@ -43,11 +43,11 @@ exports.create = (req, res) => {
 
     var sid = req.cookies['sid'];
 
-    ENV.cUsers.find({
+    ENV.cUsers.findOne({
         'session_id': sid
 
-    }).toArray(async (err, users) => {
-        var userId = users[0]['user_id'];
+    }, async (err, user) => {
+        var userId = user['user_id'];
 
         var quizId = H.genHash(10);
 
@@ -62,7 +62,7 @@ exports.create = (req, res) => {
             }
         });
 
-        ENV.cQuizes.insert({
+        ENV.cQuizes.insertOne({
             'quiz_id': quizId,
             'owner_id': userId,
             'post_user_id': postInfo['from_id'],
@@ -74,7 +74,6 @@ exports.create = (req, res) => {
                 'quiz_id': quizId
             });
         });
-
     });
 
 };
@@ -82,11 +81,11 @@ exports.create = (req, res) => {
 exports.quiz = (req, res) => {
     var quizId = req.query.q;
 
-    ENV.cQuizes.find({
+    ENV.cQuizes.findOne({
         'quiz_id': quizId
-    }).toArray((err, quizes) => {
 
-        res.send(quizes[0]);
+    }, (err, quiz) => {
+        res.send(quiz);
 
     });
 };

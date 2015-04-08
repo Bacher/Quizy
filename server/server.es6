@@ -52,25 +52,23 @@ MongoClient.connect(MONGODB_URL, function(err, db) {
 
         console.log('Quizy listening at http://%s:%s', host, port);
 
-        setTimeout(iterateFinish, 1000);
-
+        startFinishingScheduler();
     });
 
 });
 
-function iterateFinish() {
-    makeFinish()
-        .then(() => {
-            setTimeout(iterateFinish, 20000);
-        })
-        .catch(e => {
+async function startFinishingScheduler() {
+    while (true) {
+        await makeFinish().catch(e => {
             console.warn(e);
         });
+
+        await H.sleep(5000);
+    }
 }
 
 async function makeFinish() {
-
-    const NOW = new Date().getTime();
+    const NOW = Date.now();
 
     const quizes = await ENV.cQuizes.findP({
         'end_date': {
@@ -80,14 +78,10 @@ async function makeFinish() {
     });
 
     if (quizes.length) {
-
         for (var i = 0; i < quizes.length; ++i) {
-
             await runFinish(quizes[i]);
-
         }
     }
-
 }
 
 async function runFinish(quiz) {

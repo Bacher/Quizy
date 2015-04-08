@@ -18,7 +18,7 @@ $(function() {
             contentType: 'application/json; charset=UTF-8',
             dataType: 'json'
         }).then(function(data) {
-            location.href = '/' + data['quiz_id']
+            location.href = '/quiz.html?q=' + data['quiz_id']
         });
     })
 

@@ -36,7 +36,6 @@ const getJSON = exports.getJSON = function(options) {
 };
 
 const execVk = exports.execVk = function(options) {
-    console.log('exec Vk');
     return getJSON({
         host: 'api.vk.com',
         path: '/method/' + options.method + '?' + queryString.stringify(options.params)
@@ -51,7 +50,7 @@ function findOneP(query) {
             } else {
                 resolve(object);
             }
-        })
+        });
     });
 }
 

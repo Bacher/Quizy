@@ -31,10 +31,10 @@ MongoClient.connect(MONGODB_URL, function(err, db) {
     app.use(cookieParser());
     app.use(bodyParser.json());
 
-    app.get('/ok', API.auth);
+    app.get('/ok', safe(API.auth));
 
-    app.post('/api/create.json', API.create);
-    app.get('/api/quiz.json', API.quiz);
+    app.post('/api/create.json', safe(API.create));
+    app.get('/api/quiz.json', safe(API.quiz));
 
     app.use(express.static('../www'));
 
@@ -48,3 +48,11 @@ MongoClient.connect(MONGODB_URL, function(err, db) {
     });
 
 });
+
+function safe(handler) {
+    return (req, res) => {
+        handler(req, res).catch(err => {
+            res.status(500).send(err.stack);
+        });
+    };
+}

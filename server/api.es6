@@ -84,5 +84,9 @@ exports.quiz = async (req, res) => {
         'quiz_id': quizId
     });
 
-    res.send(quiz);
+    if (!quiz) {
+        res.status(404).send();
+    } else {
+        res.send(quiz);
+    }
 };

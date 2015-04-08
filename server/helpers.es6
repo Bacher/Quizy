@@ -1,6 +1,7 @@
 
 const https = require('https');
 const queryString = require('querystring');
+require('colors');
 
 exports.sleep = function(time) {
     return new Promise((resolve) => {
@@ -12,6 +13,10 @@ exports.sleep = function(time) {
 
 const get = exports.get = function(options) {
     return new Promise((resolve, reject) => {
+        if (process.env['DEBUG_REQ']) {
+            console.log('Request:'.green, options.host + options.path);
+        }
+
         https
             .request(options, res => {
                 var chunks = [];
@@ -35,11 +40,11 @@ const getJSON = exports.getJSON = function(options) {
     return get(options).then(data => JSON.parse(data));
 };
 
-const execVk = exports.execVk = function(options) {
+exports.execVk = function(options) {
     return getJSON({
         host: 'api.vk.com',
-        path: '/method/' + options.method + '?' + queryString.stringify(options.params)
-    });
+        path: '/method/' + options.method + '?' + queryString.stringify(options.params) + '&version=5.29'
+    }).then(json => json.response);
 };
 
 function findOneP(query) {
@@ -78,11 +83,24 @@ function insertOneP(object) {
     });
 }
 
+function updateOneP(condition, operation) {
+    return new Promise((resolve, reject) => {
+        this.updateOne(condition, operation, (err) => {
+            if (err) {
+                reject();
+            } else {
+                resolve();
+            }
+        })
+    });
+}
+
 exports.addPromiseMode = (collection) => {
 
     collection.findOneP = findOneP;
     collection.findP = findP;
     collection.insertOneP = insertOneP;
+    collection.updateOneP = updateOneP;
 
     return collection;
 };

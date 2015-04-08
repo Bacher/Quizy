@@ -1,0 +1,12 @@
+
+extends ./base.jade
+
+block head
+   title Quizy – List
+
+block body
+   LIST
+   each quiz in quizes
+      P
+         SPAN Quiz id:
+            = quiz.quiz_id

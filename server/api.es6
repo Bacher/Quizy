@@ -32,11 +32,19 @@ exports.auth = async (req, res) => {
     );
 
     res.writeHead(302, {
-        'Location': '/create.html',
+        'Location': '/create',
         'Set-Cookie': 'sid=' + json['session_id']
     });
 
     res.end();
+};
+
+exports.getSession = req => {
+    var sessionId = req.cookies['sid'];
+
+    return ENV.cUsers.findOneP({
+        'session_id': sessionId
+    });
 };
 
 exports.create = async (req, res) => {
@@ -77,12 +85,22 @@ exports.create = async (req, res) => {
 
 };
 
+exports.list = (userId) => {
+    return ENV.cQuizes.findP({
+        'owner_id': userId
+    });
+};
+
+const getQuiz = exports.getQuiz = quizId => {
+    return ENV.cQuizes.findOneP({
+        'quiz_id': quizId
+    });
+};
+
 exports.quiz = async (req, res) => {
     var quizId = req.query.q;
 
-    const quiz = await ENV.cQuizes.findOneP({
-        'quiz_id': quizId
-    });
+    const quiz = await getQuiz(quizId);
 
     if (!quiz) {
         res.status(404).send();
@@ -90,3 +108,4 @@ exports.quiz = async (req, res) => {
         res.send(quiz);
     }
 };
+

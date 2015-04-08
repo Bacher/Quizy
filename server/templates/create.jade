@@ -1,0 +1,19 @@
+extends ./base.jade
+
+block head
+   TITLE Quiz – Create
+
+block body
+
+   FORM#create-quiz
+      LABEL Name:
+         INPUT(data-json-name='name')
+      LABEL Post id:
+         INPUT(data-json-name='post_id',value='wall4024236_1260')
+      LABEL End date:
+         INPUT(data-json-name='end_date',data-json-type='Number',value='1111')
+
+      BUTTON Submit
+
+   script(src='bower_components/jquery/dist/jquery.min.js')
+   script(src='create.js')
